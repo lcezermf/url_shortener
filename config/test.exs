@@ -8,8 +8,7 @@ config :url_shortener, UrlShortenerWeb.Endpoint,
   server: false
 
 # In test we don't send emails.
-config :url_shortener, UrlShortener.Mailer,
-  adapter: Swoosh.Adapters.Test
+config :url_shortener, UrlShortener.Mailer, adapter: Swoosh.Adapters.Test
 
 # Print only warnings and errors during test
 config :logger, level: :warn
