@@ -21,7 +21,7 @@ defmodule UrlShortener.ShortenerTest do
       %URL{} = result = Shortener.shorten(url)
 
       assert result.original == url
-      assert result.count == 1
+      assert result.count == 0
     end
   end
 
@@ -52,8 +52,30 @@ defmodule UrlShortener.ShortenerTest do
 
       Shortener.clear()
 
-      urls = Shortener.get_urls()
-      assert Enum.empty?(urls)
+      assert Enum.empty?(Shortener.get_urls())
+    end
+  end
+
+  describe "increase_count/1" do
+    test "must increase count every time shorten url is called with a valid hashed_url" do
+      {:ok, _pid} = Shortener.start_link()
+
+      url = "http://www.pudim.com.br"
+      result = Shortener.shorten(url)
+
+      Shortener.increase_count(result.hashed_url)
+      Shortener.increase_count(result.hashed_url)
+      Shortener.increase_count(result.hashed_url)
+
+      [first | _] = Shortener.get_urls()
+
+      assert first.count == 3
+    end
+
+    test "must return the state when calls with an not_found hashed_url" do
+      {:ok, _pid} = Shortener.start_link()
+
+      :ok = Shortener.increase_count("invalid_hashed_url")
     end
   end
 end
