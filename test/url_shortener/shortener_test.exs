@@ -1,6 +1,7 @@
 defmodule UrlShortener.ShortenerTest do
   use ExUnit.Case, async: true
 
+  alias UrlShortener.URL
   alias UrlShortener.Shortener
 
   test "must return a valid genserver" do
@@ -14,32 +15,33 @@ defmodule UrlShortener.ShortenerTest do
     {:ok, _pid} = Shortener.start_link()
 
     url = "http://www.pudim.com.br"
-    url_md5 = Shortener.shorten(url)
+    %URL{} = result = Shortener.shorten(url)
 
-    assert is_binary(url_md5)
+    assert result.original == url
+    assert result.count == 1
   end
 
   test "must return state with all urls" do
     {:ok, _pid} = Shortener.start_link()
 
     url = "http://www.pudim.com.br"
-    url_md5 = Shortener.shorten(url)
+    Shortener.shorten(url)
 
-    urls = Shortener.get_urls()
+    [first_url | _] = urls = Shortener.get_urls()
 
-    assert is_map(urls)
-    assert urls[url_md5] == "http://www.pudim.com.br"
-    assert length(Map.keys(urls)) == 1
+    assert is_list(urls)
+    assert first_url.original == "http://www.pudim.com.br"
+    assert length(urls) == 1
   end
 
   test "must reset the state and clean all urls" do
     {:ok, _pid} = Shortener.start_link()
 
     url = "http://www.pudim.com.br"
-    url_md5 = Shortener.shorten(url)
+    Shortener.shorten(url)
     urls = Shortener.get_urls()
 
-    assert length(Map.keys(urls)) == 1
+    assert length(urls) == 1
 
     Shortener.clear()
 

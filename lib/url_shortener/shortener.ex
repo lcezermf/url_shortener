@@ -7,16 +7,15 @@ defmodule UrlShortener.Shortener do
 
   use GenServer
 
-  defmodule UrlShortener.ShortenerState do
-    defstruct urls: %{}
-  end
+  alias UrlShortener.URL
+  alias UrlShortener.State
 
-  alias UrlShortener.ShortenerState
+  # Add cast to count clicks
 
   # Client API
 
   def start_link(_arg \\ %{}) do
-    GenServer.start_link(__MODULE__, %ShortenerState{}, name: @name)
+    GenServer.start_link(__MODULE__, %State{}, name: @name)
   end
 
   def shorten(url) do
@@ -38,10 +37,11 @@ defmodule UrlShortener.Shortener do
   end
 
   def handle_call({:shorten, url}, _from, state) do
-    url_md5 = do_shorten(url)
-    new_state = %{state | urls: Map.merge(state.urls, %{url_md5 => url})}
+    hashed_url = do_shorten(url)
+    new_url = %URL{original: url, hashed_url: hashed_url, count: 1}
+    new_state = %{state | urls: [new_url | state.urls]}
 
-    {:reply, url_md5, new_state}
+    {:reply, new_url, new_state}
   end
 
   def handle_call(:urls, _from, state) do
@@ -49,10 +49,10 @@ defmodule UrlShortener.Shortener do
   end
 
   def handle_cast(:clear, state) do
-    {:noreply, %{state | urls: %{}}}
+    {:noreply, %{state | urls: []}}
   end
 
   defp do_shorten(url) do
-    :crypto.hash(:md5, url) |> Base.encode16(case: :lower)
+    :crypto.hash(:md5, url) |> Base.encode16(case: :lower) |> binary_part(0, 7)
   end
 end
