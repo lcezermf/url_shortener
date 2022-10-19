@@ -58,11 +58,13 @@ defmodule UrlShortener.Shortener do
     new_state =
       case Enum.find(urls, fn url -> url.hashed_url == hashed_url end) do
         nil ->
-          {:noreply, state}
+          state
 
         url ->
           new_url = %{url | count: url.count + 1}
-          %{state | urls: [new_url | state.urls]}
+          new_urls = Enum.reject(urls, fn url -> url.hashed_url == hashed_url end)
+
+          %{state | urls: [new_url | new_urls]}
       end
 
     {:noreply, new_state}

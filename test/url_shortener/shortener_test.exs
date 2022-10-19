@@ -67,6 +67,8 @@ defmodule UrlShortener.ShortenerTest do
       Shortener.increase_count(result.hashed_url)
       Shortener.increase_count(result.hashed_url)
 
+      assert Enum.count(Shortener.get_urls()) == 1
+
       [first | _] = Shortener.get_urls()
 
       assert first.count == 3
@@ -76,6 +78,50 @@ defmodule UrlShortener.ShortenerTest do
       {:ok, _pid} = Shortener.start_link()
 
       :ok = Shortener.increase_count("invalid_hashed_url")
+
+      assert Enum.empty?(Shortener.get_urls())
+    end
+  end
+
+  describe "complete flow" do
+    test "must work properly" do
+      {:ok, _pid} = Shortener.start_link()
+
+      assert Enum.empty?(Shortener.get_urls())
+
+      url_one = "url_one"
+      url_two = "url_two"
+
+      Shortener.shorten(url_one)
+      Shortener.shorten(url_two)
+
+      [shortened_url_two, shortened_url_one | _] = result = Shortener.get_urls()
+
+      assert Enum.count(result) == 2
+      assert shortened_url_two.original == url_two
+      assert shortened_url_two.count == 0
+      refute is_nil(shortened_url_two.hashed_url)
+
+      assert shortened_url_one.original == url_one
+      assert shortened_url_one.count == 0
+      refute is_nil(shortened_url_one.hashed_url)
+
+      Shortener.increase_count(shortened_url_one.hashed_url)
+      Shortener.increase_count(shortened_url_one.hashed_url)
+
+      Shortener.increase_count(shortened_url_two.hashed_url)
+
+      Shortener.increase_count("invalid")
+
+      [shorted_url_two, shorted_url_one | _] = result = Shortener.get_urls()
+
+      assert Enum.count(result) == 2
+      assert shorted_url_two.count == 1
+      assert shorted_url_one.count == 2
+
+      Shortener.clear()
+
+      assert Enum.empty?(Shortener.get_urls())
     end
   end
 end
