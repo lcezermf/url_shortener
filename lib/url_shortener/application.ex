@@ -8,6 +8,7 @@ defmodule UrlShortener.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      UrlShortener.Shortener,
       # Start the Telemetry supervisor
       UrlShortenerWeb.Telemetry,
       # Start the PubSub system

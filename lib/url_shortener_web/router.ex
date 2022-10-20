@@ -18,6 +18,8 @@ defmodule UrlShortenerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    live "/urls", ShortenerLive.Index, :index
   end
 
   # Other scopes may use custom stacks.

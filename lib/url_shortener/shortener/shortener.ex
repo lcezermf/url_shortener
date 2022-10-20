@@ -10,9 +10,12 @@ defmodule UrlShortener.Shortener do
   alias UrlShortener.URL
   alias UrlShortener.State
 
+  require Logger
+
   # Client API
 
   def start_link(_arg \\ %{}) do
+    Logger.info("Starting #{__MODULE__}")
     GenServer.start_link(__MODULE__, %State{}, name: @name)
   end
 
