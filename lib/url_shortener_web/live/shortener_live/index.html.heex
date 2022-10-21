@@ -1,6 +1,6 @@
 <section id="urls">
   <form id="add_url" phx-submit="shorten_url" method="post">
-    <input name="url" id="url" placeholder="Put the url to be shortened!" />
+    <input name="url" id="url" placeholder="Put the url to be shortened!" required />
     <button type="submit">Shorten!</button>
     <button type="button" phx-click="clear_urls" id="clear_urls" class="alert-warning ">Clear!</button>
   </form>
@@ -11,7 +11,7 @@
       <h3>Shorten urls</h3>
       <ul>
         <%= for url <- @urls do %>
-          <li><%= link "#{UrlShortenerWeb.Endpoint.url()}/#{url.original}", to: "#{UrlShortenerWeb.Endpoint.url()}/#{url.hashed_url}", target: "_blank" %></li>
+          <li><%= link url.original, to: "#{UrlShortenerWeb.Endpoint.url()}/#{url.hashed_url}", target: "_blank" %></li>
         <% end %>
       </ul>
     <% end %>
