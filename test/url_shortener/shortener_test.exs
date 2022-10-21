@@ -58,6 +58,25 @@ defmodule UrlShortener.ShortenerTest do
   #   end
   # end
 
+  describe "get_url/1" do
+    test "return url when given a valid hashed_url" do
+      {:ok, _pid} = Shortener.start_link()
+
+      url = "http://www.pudim.com.br"
+      shorten_url = Shortener.shorten(url)
+
+      fetched_url = Shortener.get_url(shorten_url.hashed_url)
+
+      assert fetched_url.original == url
+    end
+
+    test "return nil when given an invalid hashed_url" do
+      {:ok, _pid} = Shortener.start_link()
+
+      assert is_nil(Shortener.get_url("invalid"))
+    end
+  end
+
   # describe "increase_count/1" do
   #   test "must increase count every time shorten url is called with a valid hashed_url" do
   #     {:ok, _pid} = Shortener.start_link()

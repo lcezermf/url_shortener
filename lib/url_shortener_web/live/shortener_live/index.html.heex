@@ -11,7 +11,7 @@
       <h3>Shorten urls</h3>
       <ul>
         <%= for url <- @urls do %>
-          <li><%= link "#{UrlShortenerWeb.Endpoint.url()}/#{url.hashed_url}", to: "#{UrlShortenerWeb.Endpoint.url()}/#{url.hashed_url}", target: "_blank" %></li>
+          <li><%= link "#{UrlShortenerWeb.Endpoint.url()}/#{url.original}", to: "#{UrlShortenerWeb.Endpoint.url()}/#{url.hashed_url}", target: "_blank" %></li>
         <% end %>
       </ul>
     <% end %>

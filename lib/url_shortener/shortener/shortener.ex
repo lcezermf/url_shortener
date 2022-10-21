@@ -19,12 +19,16 @@ defmodule UrlShortener.Shortener do
     GenServer.start_link(__MODULE__, %State{}, name: @name)
   end
 
-  def shorten(url) do
-    GenServer.call(@name, {:shorten, url})
+  def shorten(hashed_url) do
+    GenServer.call(@name, {:shorten, hashed_url})
+  end
+
+  def get_url(url) do
+    GenServer.call(@name, {:get_url, url})
   end
 
   def get_urls do
-    GenServer.call(@name, :urls)
+    GenServer.call(@name, :get_urls)
   end
 
   def clear do
@@ -49,8 +53,18 @@ defmodule UrlShortener.Shortener do
     {:reply, new_url, new_state}
   end
 
-  def handle_call(:urls, _from, state) do
+  def handle_call(:get_urls, _from, state) do
     {:reply, state.urls, state}
+  end
+
+  def handle_call({:get_url, hashed_url}, _from, %{urls: urls} = state) do
+    case Enum.find(urls, fn url -> url.hashed_url == hashed_url end) do
+      nil ->
+        {:reply, nil, state}
+
+      url ->
+        {:reply, url, state}
+    end
   end
 
   def handle_cast(:clear, state) do
