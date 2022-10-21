@@ -8,15 +8,15 @@ defmodule UrlShortener.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      UrlShortener.Shortener,
       # Start the Telemetry supervisor
       UrlShortenerWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: UrlShortener.PubSub},
       # Start the Endpoint (http/https)
-      UrlShortenerWeb.Endpoint
+      UrlShortenerWeb.Endpoint,
       # Start a worker by calling: UrlShortener.Worker.start_link(arg)
       # {UrlShortener.Worker, arg}
+      UrlShortener.Shortener
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
