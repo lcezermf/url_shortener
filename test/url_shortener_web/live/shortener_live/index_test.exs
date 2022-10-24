@@ -39,4 +39,24 @@ defmodule UrlShortenerWeb.ShortenerLive.IndexTest do
 
     assert has_element?(view, "div#urls", "No urls yet!")
   end
+
+  test "must update click count", %{conn: conn} do
+    {:ok, view, _html} = live(conn, Routes.shortener_index_path(conn, :index))
+
+    assert has_element?(view, "input#url")
+
+    view
+    |> element("form#add_url")
+    |> render_submit(%{"url" => "http://www.pudim.com.br/"})
+
+    assert has_element?(view, "h3", "Shorten urls")
+    assert has_element?(view, "li", "pudim")
+    assert has_element?(view, "li", "Clicks 0")
+
+    view
+    |> element("li[data-id=0]")
+    |> render_click()
+
+    assert has_element?(view, "li", "Clicks 1")
+  end
 end

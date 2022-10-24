@@ -1,7 +1,13 @@
 defmodule UrlShortenerWeb.PageController do
   use UrlShortenerWeb, :controller
 
-  def index(conn, _params) do
-    render(conn, "index.html")
+  def redirect_to(conn, %{"hashed" => hashed}) do
+    case UrlShortener.Shortener.get_url(hashed) do
+      nil ->
+        conn
+
+      url ->
+        redirect(conn, external: url.original)
+    end
   end
 end

@@ -17,9 +17,9 @@ defmodule UrlShortenerWeb.Router do
   scope "/", UrlShortenerWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/r/:hashed", PageController, :redirect_to
 
-    live "/urls", ShortenerLive.Index, :index
+    live "/", ShortenerLive.Index, :index
   end
 
   # Other scopes may use custom stacks.

@@ -10,8 +10,8 @@
     <% else %>
       <h3>Shorten urls</h3>
       <ul>
-        <%= for url <- @urls do %>
-          <li><%= link url.original, to: "#{UrlShortenerWeb.Endpoint.url()}/#{url.hashed_url}", target: "_blank" %></li>
+        <%= for {url, index} <- Enum.with_index(@urls) do %>
+          <li data-id={index} phx-click="increase-count" phx-value-hashed={url.hashed}><%= link url.original, to: Routes.page_path(@socket, :redirect_to, url.hashed), target: "_blank" %> - Clicks <%= url.count %></li>
         <% end %>
       </ul>
     <% end %>

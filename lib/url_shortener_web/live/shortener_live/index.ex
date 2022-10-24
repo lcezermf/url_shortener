@@ -34,4 +34,16 @@ defmodule UrlShortenerWeb.ShortenerLive.Index do
 
     {:noreply, socket}
   end
+
+  def handle_event("increase-count", %{"hashed" => hashed}, socket) do
+    with url <- Shortener.get_url(hashed),
+         Shortener.increase_count(url.hashed) do
+    end
+
+    socket =
+      socket
+      |> assign(urls: Shortener.get_urls())
+
+    {:noreply, socket}
+  end
 end

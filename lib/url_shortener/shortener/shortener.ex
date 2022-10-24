@@ -16,27 +16,38 @@ defmodule UrlShortener.Shortener do
 
   def start_link(_arg \\ %{}) do
     Logger.info("Starting #{__MODULE__}")
+
     GenServer.start_link(__MODULE__, %State{}, name: @name)
   end
 
-  def shorten(hashed_url) do
-    GenServer.call(@name, {:shorten, hashed_url})
+  def shorten(url) do
+    Logger.info("Shorten URL #{url}")
+
+    GenServer.call(@name, {:shorten, url})
   end
 
   def get_url(url) do
+    Logger.info("Get URL #{url}")
+
     GenServer.call(@name, {:get_url, url})
   end
 
   def get_urls do
+    Logger.info("Get URLs")
+
     GenServer.call(@name, :get_urls)
   end
 
   def clear do
+    Logger.info("Clear")
+
     GenServer.cast(@name, :clear)
   end
 
-  def increase_count(hashed_url) do
-    GenServer.cast(@name, {:increase_count, hashed_url})
+  def increase_count(hashed) do
+    Logger.info("Increase count #{hashed}")
+
+    GenServer.cast(@name, {:increase_count, hashed})
   end
 
   # Server callbacks
@@ -46,8 +57,8 @@ defmodule UrlShortener.Shortener do
   end
 
   def handle_call({:shorten, url}, _from, state) do
-    hashed_url = do_shorten(url)
-    new_url = %URL{original: url, hashed_url: hashed_url}
+    hashed = do_shorten(url)
+    new_url = %URL{original: url, hashed: hashed}
     new_state = %{state | urls: [new_url | state.urls]}
 
     {:reply, new_url, new_state}
@@ -57,8 +68,8 @@ defmodule UrlShortener.Shortener do
     {:reply, state.urls, state}
   end
 
-  def handle_call({:get_url, hashed_url}, _from, %{urls: urls} = state) do
-    case Enum.find(urls, fn url -> url.hashed_url == hashed_url end) do
+  def handle_call({:get_url, hashed}, _from, %{urls: urls} = state) do
+    case Enum.find(urls, fn url -> url.hashed == hashed end) do
       nil ->
         {:reply, nil, state}
 
@@ -71,15 +82,15 @@ defmodule UrlShortener.Shortener do
     {:noreply, %{state | urls: []}}
   end
 
-  def handle_cast({:increase_count, hashed_url}, %{urls: urls} = state) do
+  def handle_cast({:increase_count, hashed}, %{urls: urls} = state) do
     new_state =
-      case Enum.find(urls, fn url -> url.hashed_url == hashed_url end) do
+      case Enum.find(urls, fn url -> url.hashed == hashed end) do
         nil ->
           state
 
         url ->
           new_url = %{url | count: url.count + 1}
-          new_urls = Enum.reject(urls, fn url -> url.hashed_url == hashed_url end)
+          new_urls = Enum.reject(urls, fn url -> url.hashed == hashed end)
 
           %{state | urls: [new_url | new_urls]}
       end
