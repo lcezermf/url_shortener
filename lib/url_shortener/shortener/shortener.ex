@@ -50,6 +50,12 @@ defmodule UrlShortener.Shortener do
     GenServer.cast(@name, {:increase_count, hashed})
   end
 
+  def kill do
+    Logger.info("Kill process")
+
+    GenServer.cast(@name, :kill)
+  end
+
   # Server callbacks
 
   def init(state) do
@@ -96,6 +102,13 @@ defmodule UrlShortener.Shortener do
       end
 
     {:noreply, new_state}
+  end
+
+  def handle_cast(:kill, state) do
+    Process.whereis(@name)
+    |> Process.exit(:normal)
+
+    {:noreply, state}
   end
 
   defp do_shorten(url) do

@@ -18,6 +18,7 @@ defmodule UrlShortenerWeb.Router do
     pipe_through :browser
 
     get "/r/:hashed", PageController, :redirect_to
+    get "/killer", PageController, :killer
 
     live "/", ShortenerLive.Index, :index
   end

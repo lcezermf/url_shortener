@@ -10,4 +10,10 @@ defmodule UrlShortenerWeb.PageController do
         redirect(conn, external: url.original)
     end
   end
+
+  def killer(conn, _) do
+    UrlShortener.Shortener.kill()
+
+    redirect(conn, to: Routes.shortener_index_path(conn, :index))
+  end
 end
