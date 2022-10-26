@@ -14,46 +14,48 @@ defmodule UrlShortener.Shortener do
 
   # Client API
 
-  def start_link(_arg \\ %{}) do
-    Logger.info("Starting #{__MODULE__}")
+  def start_link(opts \\ []) do
+    name = Keyword.get(opts, :name, @name)
 
-    GenServer.start_link(__MODULE__, %State{}, name: @name)
+    Logger.info("Starting #{__MODULE__}:#{name}")
+
+    GenServer.start_link(__MODULE__, %State{}, name: name)
   end
 
-  def shorten(url) do
+  def shorten(server_name, url) do
     Logger.info("Shorten URL #{url}")
 
-    GenServer.call(@name, {:shorten, url})
+    GenServer.call(server_name, {:shorten, url})
   end
 
-  def get_url(url) do
+  def get_url(server_name, url) do
     Logger.info("Get URL #{url}")
 
-    GenServer.call(@name, {:get_url, url})
+    GenServer.call(server_name, {:get_url, url})
   end
 
-  def get_urls do
+  def get_urls(server_name) do
     Logger.info("Get URLs")
 
-    GenServer.call(@name, :get_urls)
+    GenServer.call(server_name, :get_urls)
   end
 
-  def clear do
+  def clear(server_name) do
     Logger.info("Clear")
 
-    GenServer.cast(@name, :clear)
+    GenServer.cast(server_name, :clear)
   end
 
-  def increase_count(hashed) do
+  def increase_count(server_name, hashed) do
     Logger.info("Increase count #{hashed}")
 
-    GenServer.cast(@name, {:increase_count, hashed})
+    GenServer.cast(server_name, {:increase_count, hashed})
   end
 
-  def kill do
+  def kill(server_name) do
     Logger.info("Kill process")
 
-    GenServer.cast(@name, :kill)
+    GenServer.cast(server_name, :kill)
   end
 
   # Server callbacks
