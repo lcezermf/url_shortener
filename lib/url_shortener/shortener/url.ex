@@ -1,3 +1,3 @@
 defmodule UrlShortener.URL do
-  defstruct [:original, :hashed, count: 0]
+  defstruct [:original, :hashed, clicks: 0]
 end

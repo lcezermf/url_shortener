@@ -19,8 +19,8 @@
           <%= for {url, index} <- Enum.with_index(@urls) do %>
             <tr>
               <td name={"url-original-#{index}"}><%= url.original %></td>
-              <td name={"url-hashed-#{index}"} data-id={index} phx-click="increase-count" phx-value-hashed={url.hashed}><%= link Routes.page_url(@socket, :redirect_to, url.hashed), to: Routes.page_path(@socket, :redirect_to, url.hashed), target: "_blank" %></td>
-              <td name={"url-clicks-#{index}"}><%= url.count %></td>
+              <td name={"url-hashed-#{index}"} data-id={index} phx-click="increase-clicks" phx-value-hashed={url.hashed}><%= link Routes.page_url(@socket, :redirect_to, url.hashed), to: Routes.page_path(@socket, :redirect_to, url.hashed), target: "_blank" %></td>
+              <td name={"url-clicks-#{index}"}><%= url.clicks %></td>
             </tr>
           <% end %>
         </tbody>

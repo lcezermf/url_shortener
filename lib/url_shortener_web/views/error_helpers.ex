@@ -28,7 +28,7 @@ defmodule UrlShortenerWeb.ErrorHelpers do
     #     dgettext("errors", "is invalid")
     #
     #     # Translate the number of files with plural rules
-    #     dngettext("errors", "1 file", "%{count} files", count)
+    #     dngettext("errors", "1 file", "%{clicks} files", clicks)
     #
     # Because the error messages we show in our forms and APIs
     # are defined inside Ecto, we need to translate them dynamically.
@@ -36,10 +36,10 @@ defmodule UrlShortenerWeb.ErrorHelpers do
     # backend as first argument.
     #
     # Note we use the "errors" domain, which means translations
-    # should be written to the errors.po file. The :count option is
+    # should be written to the errors.po file. The :clicks option is
     # set by Ecto and indicates we should also apply plural rules.
-    if count = opts[:count] do
-      Gettext.dngettext(UrlShortenerWeb.Gettext, "errors", msg, msg, count, opts)
+    if clicks = opts[:clicks] do
+      Gettext.dngettext(UrlShortenerWeb.Gettext, "errors", msg, msg, clicks, opts)
     else
       Gettext.dgettext(UrlShortenerWeb.Gettext, "errors", msg, opts)
     end

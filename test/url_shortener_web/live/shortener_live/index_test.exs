@@ -28,7 +28,7 @@ defmodule UrlShortenerWeb.ShortenerLive.IndexTest do
     assert has_element?(view, "h3", "Shorten urls")
   end
 
-  test "must update click count", %{conn: conn} do
+  test "must update click clicks", %{conn: conn} do
     {:ok, view, _html} = live(conn, Routes.shortener_index_path(conn, :index))
 
     assert has_element?(view, "input#url")

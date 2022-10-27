@@ -14,7 +14,7 @@ defmodule UrlShortener.ShortenerTest do
       %URL{} = result = Shortener.shorten(pid, url)
 
       assert result.original == url
-      assert result.count == 0
+      assert result.clicks == 0
     end
   end
 
@@ -68,28 +68,28 @@ defmodule UrlShortener.ShortenerTest do
     end
   end
 
-  describe "increase_count/1" do
-    test "must increase count every time shorten url is called with a valid hashed" do
+  describe "increase_clicks/1" do
+    test "must increase clicks every time shorten url is called with a valid hashed" do
       {:ok, pid} = Shortener.start_link(name: :test_6)
 
       url = "http://www.pudim.com.br"
       result = Shortener.shorten(pid, url)
 
-      Shortener.increase_count(pid, result.hashed)
-      Shortener.increase_count(pid, result.hashed)
-      Shortener.increase_count(pid, result.hashed)
+      Shortener.increase_clicks(pid, result.hashed)
+      Shortener.increase_clicks(pid, result.hashed)
+      Shortener.increase_clicks(pid, result.hashed)
 
       assert Enum.count(Shortener.get_urls(pid)) == 1
 
       [first | _] = Shortener.get_urls(pid)
 
-      assert first.count == 3
+      assert first.clicks == 3
     end
 
     test "must return the state when calls with an not_found hashed" do
       {:ok, pid} = Shortener.start_link(name: :test_7)
 
-      :ok = Shortener.increase_count(pid, "invalid_hashed")
+      :ok = Shortener.increase_clicks(pid, "invalid_hashed")
 
       assert Enum.empty?(Shortener.get_urls(pid))
     end
@@ -111,25 +111,25 @@ defmodule UrlShortener.ShortenerTest do
 
       assert Enum.count(result) == 2
       assert shortened_url_two.original == url_two
-      assert shortened_url_two.count == 0
+      assert shortened_url_two.clicks == 0
       refute is_nil(shortened_url_two.hashed)
 
       assert shortened_url_one.original == url_one
-      assert shortened_url_one.count == 0
+      assert shortened_url_one.clicks == 0
       refute is_nil(shortened_url_one.hashed)
 
-      Shortener.increase_count(pid, shortened_url_one.hashed)
-      Shortener.increase_count(pid, shortened_url_one.hashed)
+      Shortener.increase_clicks(pid, shortened_url_one.hashed)
+      Shortener.increase_clicks(pid, shortened_url_one.hashed)
 
-      Shortener.increase_count(pid, shortened_url_two.hashed)
+      Shortener.increase_clicks(pid, shortened_url_two.hashed)
 
-      Shortener.increase_count(pid, "invalid")
+      Shortener.increase_clicks(pid, "invalid")
 
       [shorted_url_two, shorted_url_one | _] = result = Shortener.get_urls(pid)
 
       assert Enum.count(result) == 2
-      assert shorted_url_two.count == 1
-      assert shorted_url_one.count == 2
+      assert shorted_url_two.clicks == 1
+      assert shorted_url_one.clicks == 2
 
       Shortener.clear(pid)
 

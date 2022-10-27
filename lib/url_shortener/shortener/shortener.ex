@@ -46,10 +46,10 @@ defmodule UrlShortener.Shortener do
     GenServer.cast(server_name, :clear)
   end
 
-  def increase_count(server_name, hashed) do
-    Logger.info("Increase count #{hashed}")
+  def increase_clicks(server_name, hashed) do
+    Logger.info("Increase clicks #{hashed}")
 
-    GenServer.cast(server_name, {:increase_count, hashed})
+    GenServer.cast(server_name, {:increase_clicks, hashed})
   end
 
   def kill(server_name) do
@@ -90,14 +90,14 @@ defmodule UrlShortener.Shortener do
     {:noreply, %{state | urls: []}}
   end
 
-  def handle_cast({:increase_count, hashed}, %{urls: urls} = state) do
+  def handle_cast({:increase_clicks, hashed}, %{urls: urls} = state) do
     new_state =
       case Enum.find(urls, fn url -> url.hashed == hashed end) do
         nil ->
           state
 
         url ->
-          new_url = %{url | count: url.count + 1}
+          new_url = %{url | clicks: url.clicks + 1}
           new_urls = Enum.reject(urls, fn url -> url.hashed == hashed end)
 
           %{state | urls: [new_url | new_urls]}
