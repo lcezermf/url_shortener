@@ -1,5 +1,5 @@
 defmodule UrlShortener.Shortener do
-  @doc """
+  @moduledoc """
   Module to handles url shortener and get logic.
   """
 

@@ -37,7 +37,7 @@ defmodule UrlShortenerWeb.ShortenerLive.Index do
 
   def handle_event("increase-clicks", %{"hashed" => hashed}, socket) do
     with url <- Shortener.get_url(Shortener.shorterner_server_pid(), hashed),
-         Shortener.increase_clicks(Shortener.shorterner_server_pid(), url.hashed) do
+         :ok <- Shortener.increase_clicks(Shortener.shorterner_server_pid(), url.hashed) do
     end
 
     socket =
