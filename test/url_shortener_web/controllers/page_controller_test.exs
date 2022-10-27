@@ -2,14 +2,14 @@ defmodule UrlShortenerWeb.PageControllerTest do
   use UrlShortenerWeb.ConnCase
 
   setup do
-    {:ok, _pid} = UrlShortener.Shortener.start_link(name: :test_controller)
+    {:ok, _pid} = UrlShortener.Shortener.start_link(name: :test_server)
 
     :ok
   end
 
   describe "GET /r/:hashed" do
     test "redirect to original URL if the hashed is valid", %{conn: conn} do
-      url = UrlShortener.Shortener.shorten(:test_controller, "http://www.pudim.com.br")
+      url = UrlShortener.Shortener.shorten(:test_server, "http://www.pudim.com.br")
 
       conn =
         conn

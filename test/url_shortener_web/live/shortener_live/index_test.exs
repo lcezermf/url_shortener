@@ -3,7 +3,7 @@ defmodule UrlShortenerWeb.ShortenerLive.IndexTest do
   import Phoenix.LiveViewTest
 
   setup do
-    {:ok, _pid} = UrlShortener.Shortener.start_link(name: :test_live_view)
+    {:ok, _pid} = UrlShortener.Shortener.start_link(name: :test_server)
 
     :ok
   end

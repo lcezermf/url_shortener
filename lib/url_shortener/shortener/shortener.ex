@@ -113,6 +113,13 @@ defmodule UrlShortener.Shortener do
     {:noreply, state}
   end
 
+  @spec shorterner_server_pid :: pid()
+  def shorterner_server_pid do
+    server = if Mix.env() == :dev, do: @name, else: :test_server
+
+    Process.whereis(server)
+  end
+
   defp do_shorten(url) do
     :crypto.hash(:md5, url) |> Base.encode16(case: :lower) |> binary_part(0, 7)
   end
