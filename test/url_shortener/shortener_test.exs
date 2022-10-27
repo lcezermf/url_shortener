@@ -4,8 +4,6 @@ defmodule UrlShortener.ShortenerTest do
   alias UrlShortener.URL
   alias UrlShortener.Shortener
 
-  # Needs to fix them all, cause the process is getting in conflict
-
   describe "shorten/1" do
     test "must return the url short version" do
       {:ok, pid} = Shortener.start_link(name: :test_1)
