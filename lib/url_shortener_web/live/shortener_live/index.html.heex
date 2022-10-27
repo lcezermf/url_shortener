@@ -9,11 +9,22 @@
       <p>No urls yet!</p>
     <% else %>
       <h3>Shorten urls</h3>
-      <ul>
-        <%= for {url, index} <- Enum.with_index(@urls) do %>
-          <li data-id={index} phx-click="increase-count" phx-value-hashed={url.hashed}><%= link url.original, to: Routes.page_path(@socket, :redirect_to, url.hashed), target: "_blank" %> - Clicks <%= url.count %></li>
-        <% end %>
-      </ul>
+      <table>
+        <thead>
+          <th>Original</th>
+          <th>Shorten</th>
+          <th>Clicks</th>
+        </thead>
+        <tbody>
+          <%= for {url, index} <- Enum.with_index(@urls) do %>
+            <tr>
+              <td name={"url-original-#{index}"}><%= url.original %></td>
+              <td name={"url-hashed-#{index}"} data-id={index} phx-click="increase-count" phx-value-hashed={url.hashed}><%= link Routes.page_url(@socket, :redirect_to, url.hashed), to: Routes.page_path(@socket, :redirect_to, url.hashed), target: "_blank" %></td>
+              <td name={"url-clicks-#{index}"}><%= url.count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     <% end %>
   </div>
 </section>

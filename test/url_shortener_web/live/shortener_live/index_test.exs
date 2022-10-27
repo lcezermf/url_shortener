@@ -38,14 +38,14 @@ defmodule UrlShortenerWeb.ShortenerLive.IndexTest do
     |> render_submit(%{"url" => "http://www.pudim.com.br/"})
 
     assert has_element?(view, "h3", "Shorten urls")
-    assert has_element?(view, "li", "pudim")
-    assert has_element?(view, "li", "Clicks 0")
+    assert has_element?(view, "td[name='url-original-0']", "pudim")
+    assert has_element?(view, "td[name='url-clicks-0']", "0")
 
     view
-    |> element("li[data-id=0]")
+    |> element("td[data-id=0]")
     |> render_click()
 
-    assert has_element?(view, "li", "Clicks 1")
+    assert has_element?(view, "td[name='url-clicks-0']", "1")
   end
 
   test "must reset all urls", %{conn: conn} do
