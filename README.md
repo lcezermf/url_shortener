@@ -1,0 +1,1 @@
+A learning project to apply LiveView + GenServer + Testing with Elixir/Phoenix.
